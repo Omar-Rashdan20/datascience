@@ -1,4 +1,3 @@
-#DA330 --HW
 #Q1)Read in the aapl.csv, amzn.csv, fb.csv, goog.csv, and nflx.csv files:
 import pandas as pd 
 fb=pd.read_csv("C:/Users/96279/Downloads/fb.csv")
