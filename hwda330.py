@@ -1,0 +1,74 @@
+#DA330 --HW
+#Q1)Read in the aapl.csv, amzn.csv, fb.csv, goog.csv, and nflx.csv files:
+import pandas as pd 
+fb=pd.read_csv("C:/Users/96279/Downloads/fb.csv")
+nflx=pd.read_csv("C:/Users/96279/Downloads/nflx.csv")
+google=pd.read_csv("C:/Users/96279/Downloads/goog.csv")
+amzn=pd.read_csv("C:/Users/96279/Downloads/amzn.csv")
+apple=pd.read_csv("C:/Users/96279/Downloads/aapl.csv")
+#_______________________________________________________________
+#Q2)Add a column to each dataframe, called ticker, indicating the ticker symbol it is for (Apple's is
+# AAPL, for example); this is how you look up a stock. In this case, the filenames happen to be the
+# ticker symbols:
+List=[fb,nflx,google,amzn,apple]
+Name=["FACB","NFLX","GOOGLE","AMZN","APPLE"]
+i=0
+for j in range(len(Name)):
+        df=List[i]
+        df["ticker"]=Name[j]
+        j+=1
+        i+=1 
+#and we can solve the Q2 by using insert
+# c=0
+# for q in range(len(Name)):
+#     df=List[c]
+#     df.insert(loc=0,column="ticker",value=Name[q])
+#     q+=1
+#     c+=1
+#******************************************************************
+# Q3)Append them together into a single dataframe
+newdata=pd.concat([fb,nflx,google,amzn,apple])
+# print(newdata)
+#******************************************************************
+#Q4)Save the result in a CSV file called faang.csv
+newdata.to_csv("faang.csv",index=False)
+#******************************************************************
+#Q5)With faang, use type conversion to cast (convert) the values of the date column into datetimes
+# and the volume column into integers. Then, sort by date and ticker
+newdata['date']=pd.to_datetime(newdata['date'])
+newdata['volume']=pd.to_numeric(newdata['volume'],downcast="integer")
+# print(newdata.dtypes) 
+newdata=newdata.sort_values(by=['date','ticker'])
+#******************************************************************
+#Q6)Find the seven rows in faang with the lowest value for volume:
+minvalue=newdata.sort_values(by=['volume'],ascending=True).head(7)
+# print(minvalue)
+#******************************************************************
+#Q7)Using the faang.csv file, group by the ticker and resample to monthly frequency. Make the
+# following aggregations:
+# A. Mean of the opening price
+# B. Maximum of the high price
+# C. Minimum of the low price
+# D. Mean of the closing price
+# E. Sum of the volume traded.
+dataframe=pd.read_csv("C:/Users/96279/faang.csv")
+dataframe['date'] = pd.to_datetime(dataframe['date'])
+dataframe=dataframe.set_index('date').groupby('ticker').resample('1M').agg({'open': 'mean', 'high':'max','low':"min", 'close': 'mean','volume':"sum"})
+# print (dataframe)
+#*******************************************************************
+#Q8)Add event descriptions:
+A = pd.DataFrame({
+    'ticker': ['FB','FB','FB'], 
+    'date': ['2018-07-25', '2018-03-19', '2018-03-20'],
+    'event': ['Disappointing user growth announced after close.', 
+              'Cambridge Analytica story', 
+              'FTC investigation']})
+
+A.set_index(['date','ticker'], inplace=True)
+
+B = pd.read_csv('C:/Users/96279/faang.csv')
+
+
+result = pd.merge(A, B, how='outer', on=["date","ticker"])
+
+#print(result)
